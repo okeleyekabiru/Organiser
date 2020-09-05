@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Organiser.Utilities
+namespace Organiser
 {
    public class Settings
     {
