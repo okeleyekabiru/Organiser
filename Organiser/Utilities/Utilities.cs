@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Management;
 
 namespace Organiser
 {
-    public static class Utilities 
-    { 
+    public static class Utilities
+    {
         public static string SerializeSettings<T>(this T data)
         {
             return JsonConvert.SerializeObject(data);
@@ -18,7 +19,10 @@ namespace Organiser
 
         public static void EnumerateAndMoveCategorize()
         {
-            var downloadPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads";
+            var user = GetWindowsUserAccountName();
+            var baseUrl = $@"C:\Users\{user}";
+            var downloadPath = baseUrl + @"\Downloads";
+            Console.WriteLine(downloadPath);
             foreach (var item in Directory.GetFiles(downloadPath))
             {
 
@@ -33,7 +37,7 @@ namespace Organiser
                      || item.EndsWith(".wma")
                      || item.EndsWith(".wpl"))
 
-                    Categorize(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic), item);
+                    Categorize(baseUrl + @"\Music", item);
                 else if (item.EndsWith(".ai")
                      || item.EndsWith(".tiff")
                      || item.EndsWith(".tif")
@@ -46,7 +50,7 @@ namespace Organiser
                      || item.EndsWith(".ico")
                      || item.EndsWith(".gif ")
                      || item.EndsWith(".bmp"))
-                    Categorize(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), item);
+                    Categorize(baseUrl + @"\Pictures", item);
                 else if (item.EndsWith(".xlsx")
                    || item.EndsWith(".xlsm")
                    || item.EndsWith(".xls")
@@ -59,7 +63,7 @@ namespace Organiser
                    || item.EndsWith(".odt")
                    || item.EndsWith(".docx")
                    || item.EndsWith(".doc"))
-                    Categorize(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), item);
+                    Categorize(baseUrl + @"\Documents", item);
 
                 else if (item.EndsWith(".wmv")
                   || item.EndsWith(".vob")
@@ -76,7 +80,7 @@ namespace Organiser
                   || item.EndsWith(".avi")
                   || item.EndsWith(".3gp")
                   || item.EndsWith(".3g2"))
-                    Categorize(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), item);
+                    Categorize(baseUrl + @"\Videos", item);
 
 
 
@@ -97,6 +101,22 @@ namespace Organiser
             }
         }
 
-        
+
+
+        private static string GetWindowsUserAccountName()
+        {
+            string userName = string.Empty;
+            ManagementScope ms = new ManagementScope("\\\\.\\root\\cimv2");
+            ObjectQuery query = new ObjectQuery("select * from win32_computersystem");
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(ms, query);
+
+            foreach (ManagementObject mo in searcher?.Get())
+            {
+                userName = mo["username"]?.ToString();
+            }
+            userName = userName?.Substring(userName.IndexOf(@"\") + 1);
+
+            return userName;
+        }
     }
 }

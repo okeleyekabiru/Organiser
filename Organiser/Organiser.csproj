@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -12,11 +12,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="mydb.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    
+    <PackageReference Include="System.Management" Version="4.7.0" />
   </ItemGroup>
 </Project>

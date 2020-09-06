@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,10 @@ namespace Organiser
             try
             {
                 Log.Information("Organiser starting......");
+                if (args.Length == 0)
+                {
+                    Directory.SetCurrentDirectory(AppDomain.CurrentDomain.BaseDirectory);
+                }
                 CreateHostBuilder(args).Build().Run();
                 return;
             }

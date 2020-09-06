@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -26,7 +27,8 @@ namespace Organiser
         public Task StartAsync(CancellationToken stoppingToken)
 
         {
-
+         
+                
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<OrganiserContext>();
@@ -41,7 +43,7 @@ namespace Organiser
 
             return Task.CompletedTask;
         }
-
+    
         private async void RunTask(object state)
         {
             try
@@ -62,13 +64,12 @@ namespace Organiser
 
                         if (Settings.NextRun.Value == DateTime.Now ||Settings.NextRun.Value < DateTime.Now)
                         {
-                            _logger.LogInformation(
-                        "Checking Download folder for files");
+                      
                            Utilities.EnumerateAndMoveCategorize();
                             await scheduler.Remove(storedSettings);
                             var settings = new Settings
                             {
-                                NextRun = DateTime.Now.AddHours(24),
+                                NextRun = DateTime.Now.AddHours(1),
                                 LastRun = DateTime.Now
                             };
 
@@ -80,6 +81,22 @@ namespace Organiser
                         }
 
                     
+
+                    }
+                    else
+                    {
+                        
+                           Utilities.EnumerateAndMoveCategorize();
+                            
+                            var settings = new Settings
+                            {
+                                NextRun = DateTime.Now.AddHours(1),
+                                LastRun = DateTime.Now
+                            };
+
+
+                            await scheduler.Add(settings.SerializeSettings());
+                            await context.SaveChangesAsync();
 
                     }
                 }
