@@ -1,9 +1,16 @@
 # FileOrganizer
-
 This project was generated with VISUAL STUDIO 2019 version 16.9 and ASP CORE 3.1.3
+
+
+## Description
+File organizer is service for windows that help categories downloaded files in downloads folder to their right folder eg file with .mp4 extension are moved to video folder
+
+
 ## After cloning this project
 
 Run `dotnet restore in the project file where program is located you can also run dotnet run this would restore necessary dependency needed,build and run the project 
+
+
 
 
 ## Development server
