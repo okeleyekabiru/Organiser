@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.IO;
 using System.Management;
@@ -7,6 +8,7 @@ namespace Organiser
 {
     public static class Utilities
     {
+       
         public static string SerializeSettings<T>(this T data)
         {
             return JsonConvert.SerializeObject(data);
@@ -23,8 +25,14 @@ namespace Organiser
             var baseUrl = $@"C:\Users\{user}";
             var downloadPath = baseUrl + @"\Downloads";
             Console.WriteLine(downloadPath);
-            foreach (var item in Directory.GetFiles(downloadPath))
+            
+            foreach (var item in Directory.GetFiles(downloadPath) )
             {
+
+                try
+                {
+                    //do something with file
+               
 
                 if (item.EndsWith(".aif")
                      || item.EndsWith(".cda")
@@ -83,7 +91,12 @@ namespace Organiser
                     Categorize(baseUrl + @"\Videos", item);
 
 
-
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    Log.Fatal(ex, "An error occured while checking files, file locked");
+                   
+                }
             };
         }
 
@@ -106,6 +119,17 @@ namespace Organiser
         private static string GetWindowsUserAccountName()
         {
             string userName = string.Empty;
+
+
+
+
+
+
+
+
+
+
+
             ManagementScope ms = new ManagementScope("\\\\.\\root\\cimv2");
             ObjectQuery query = new ObjectQuery("select * from win32_computersystem");
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(ms, query);
